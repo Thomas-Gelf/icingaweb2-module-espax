@@ -1,6 +1,6 @@
 <?php
 
-namespace Icinga\Module\Eventtracker\Daemon;
+namespace Icinga\Module\Espax\Daemon;
 
 use gipfl\ZfDb\Adapter\Adapter as Db;
 

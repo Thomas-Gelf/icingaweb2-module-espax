@@ -3,7 +3,6 @@
 namespace Icinga\Module\Espax\Daemon;
 
 use gipfl\ZfDb\Adapter\Adapter;
-use Icinga\Module\Eventtracker\Daemon\DbBasedComponent;
 
 class RpcNamespaceEspaXDb implements DbBasedComponent
 {

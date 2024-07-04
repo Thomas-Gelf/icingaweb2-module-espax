@@ -6,7 +6,6 @@ use gipfl\Protocol\EspaX\EspaXClient;
 use gipfl\Protocol\EspaX\EspaXConnectionConfig;
 use gipfl\ZfDb\Adapter\Adapter as Db;
 use Icinga\Application\Config;
-use Icinga\Module\Eventtracker\Daemon\DbBasedComponent;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 

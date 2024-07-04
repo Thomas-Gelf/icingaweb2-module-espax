@@ -12,7 +12,6 @@ use gipfl\ZfDb\Adapter\Adapter as ZfDb;
 use gipfl\ZfDb\Adapter\Pdo\Mysql;
 use Icinga\Application\Icinga;
 use Icinga\Module\Espax\Db\ZfDbConnectionFactory;
-use Icinga\Module\Eventtracker\Daemon\DbBasedComponent;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\Loop;
 use React\Promise\ExtendedPromiseInterface;
