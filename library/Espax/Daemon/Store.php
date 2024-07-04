@@ -124,22 +124,22 @@ class Store
     /**
      * ESPA-X-Server confirmed receipt
      */
-    public function setConfirmed(string $tan)
+    public function setConfirmed(string $reference)
     {
         $this->db->update(self::TABLE_NOTIFICATION, [
             'ts_confirmed' => $this->now(),
-        ], $this->whereTan($tan));
+        ], $this->whereReference($reference));
     }
 
     /**
      * Accepted by the final destination
      */
-    public function setAccepted(string $tan, ?string $acceptedBy)
+    public function setAccepted(string $reference, ?string $acceptedBy)
     {
         $this->db->update(self::TABLE_NOTIFICATION, [
             'ts_accepted'    => $this->now(),
-            'ts_accepted_by' => $acceptedBy,
-        ], $this->whereTan($tan));
+            'accepted_by' => $acceptedBy,
+        ], $this->whereReference($reference));
     }
 
     /**
@@ -160,8 +160,8 @@ class Store
         return $this->db->quoteInto('ts = ?', $ts);
     }
 
-    protected function whereTan(string $tan): string
+    protected function whereReference(string $reference): string
     {
-        return $this->db->quoteInto('problem_tan = ?', $tan);
+        return $this->db->quoteInto('problem_reference = ?', $reference);
     }
 }

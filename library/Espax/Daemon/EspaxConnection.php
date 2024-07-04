@@ -194,13 +194,13 @@ class EspaxConnection
         SS-STATUS:    Completed
         SS-RESULT:    Accepted
         */
-        $tan = $indication->requireProperty(ResponseProperty::SP_PR_TAN);
+        $reference = $indication->requireProperty(RequestProperty::CP_PR_REF);
         // Hint: SS-STATUS is optional
         if ($indication->getProperty(IndicationProperty::SS_STATUS) === EventStatus::COMPLETED) {
             switch ($indication->requireProperty(IndicationProperty::SS_RESULT)) {
                 // Prepared, Queued, Active, Conversation setup, Conversation, Postprocessing
                 case 'Accepted':
-                    $this->store->setAccepted($tan, $indication->getProperty(IndicationProperty::SS_NETWORK_NAME));
+                    $this->store->setAccepted($reference, $indication->getProperty(IndicationProperty::SS_NETWORK_NAME));
                     break;
             }
         }
@@ -215,10 +215,10 @@ class EspaxConnection
         SP-CREATED: 2023-08-29T11:48:19
         SP-STATUS:  Active
         */
-        $tan = $indication->requireProperty(ResponseProperty::SP_PR_TAN);
+        $reference = $indication->requireProperty(RequestProperty::CP_PR_REF);
         switch ($indication->getProperty(IndicationProperty::SP_STATUS)) {
             case EventProcessStatus::ACTIVE:
-                $this->store->setConfirmed($tan);
+                $this->store->setConfirmed($reference);
                 break;
             default:
         }
