@@ -1,0 +1,21 @@
+[Unit]
+Description=ESPA-X Daemon for Icinga
+Documentation=https://github.com/Thomas-Gelf/icingaweb2-module-espax
+Wants=network.target
+
+[Service]
+EnvironmentFile=-/etc/default/icinga-espax
+EnvironmentFile=-/etc/sysconfig/icinga-espax
+ExecStart=/usr/bin/icingacli espax daemon run
+ExecReload=/bin/kill -HUP ${MAINPID}
+User=icingaespax
+SyslogIdentifier=icinga-espax
+Type=notify
+
+NotifyAccess=main
+WatchdogSec=10
+RestartSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
