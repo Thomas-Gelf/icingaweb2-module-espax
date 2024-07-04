@@ -2,6 +2,8 @@
 <ruleset name="PHP_CodeSniffer">
     <description>PSR2 Coding Standard</description>
 
+    <file>application/</file>
+    <file>library/</file>
     <file>src/</file>
 
     <arg value="wps"/>
