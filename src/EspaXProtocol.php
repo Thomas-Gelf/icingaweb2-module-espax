@@ -13,7 +13,7 @@ class EspaXProtocol
 
     protected static $validateOnRender = true;
 
-    public static function renderSimpleXml(SimpleXMLElement $espa)
+    public static function renderSimpleXml(SimpleXMLElement $espa): string
     {
         /** @var DOMDocument $dom */
         $dom = dom_import_simplexml($espa)->ownerDocument;
@@ -25,7 +25,7 @@ class EspaXProtocol
         return $dom->saveXML();
     }
 
-    public static function validateSimpleXml(SimpleXMLElement $espa)
+    public static function validateSimpleXml(SimpleXMLElement $espa): void
     {
         /** @var DOMDocument $dom */
         $dom = dom_import_simplexml($espa)->ownerDocument;
