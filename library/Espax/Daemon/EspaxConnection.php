@@ -200,7 +200,10 @@ class EspaxConnection
             switch ($indication->requireProperty(IndicationProperty::SS_RESULT)) {
                 // Prepared, Queued, Active, Conversation setup, Conversation, Postprocessing
                 case 'Accepted':
-                    $this->store->setAccepted($reference, $indication->getProperty(IndicationProperty::SS_NETWORK_NAME));
+                    $this->store->setAccepted(
+                        $reference,
+                        $indication->getProperty(IndicationProperty::SS_NETWORK_NAME)
+                    );
                     break;
             }
         }
