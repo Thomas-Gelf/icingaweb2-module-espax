@@ -33,6 +33,16 @@ class IcingaProblemReference implements ProblemReference
         return str_replace('-', '', $this->getReferenceUuid()->toString());
     }
 
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    public function getService(): ?string
+    {
+        return $this->service;
+    }
+
     public function jsonSerialize(): object
     {
         if ($this->service === null) {
