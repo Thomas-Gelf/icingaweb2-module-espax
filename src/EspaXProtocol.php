@@ -19,7 +19,7 @@ class EspaXProtocol
         $dom = dom_import_simplexml($espa)->ownerDocument;
         $dom->formatOutput = true;
         if (self::$validateOnRender) {
-            $dom->schemaValidate(dirname(__DIR__) . '/lab-log/espa-x100.xsd');
+            $dom->schemaValidate(__DIR__ . '/resources/espa-x_v1.xsd');
         }
 
         return $dom->saveXML();
