@@ -98,10 +98,10 @@ class Store
     {
         $ts = $this->uniqueNow();
         $this->db->insert(self::TABLE_NOTIFICATION, [
-            'ts'        => $this->uniqueNow(),
-            'node_uuid' => $this->node->uuid->getBytes(),
+            'ts'          => $this->uniqueNow(),
+            'node_uuid'   => $this->node->uuid->getBytes(),
             'destination' => $notification->destination,
-            'message' => $notification->message,
+            'message'     => $notification->message,
             'problem_reference' => $notification->reference->__toString(),
             'problem_reference_implementation' => get_class($notification->reference),
             'problem_reference_details' => JsonString::encode($notification->reference->jsonSerialize()),
@@ -137,7 +137,7 @@ class Store
     public function setAccepted(string $reference, ?string $acceptedBy)
     {
         $this->db->update(self::TABLE_NOTIFICATION, [
-            'ts_accepted'    => $this->now(),
+            'ts_accepted' => $this->now(),
             'accepted_by' => $acceptedBy,
         ], $this->whereReference($reference));
     }
