@@ -55,4 +55,4 @@ CREATE TABLE espax_schema_migration (
 
 INSERT
     INTO espax_schema_migration (schema_version, migration_time)
-    VALUES (1, NOW());
+    VALUES (2, NOW());
