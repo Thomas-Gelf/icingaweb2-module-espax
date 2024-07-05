@@ -382,7 +382,7 @@
             <xs:element name="PROPRIETARY" type="ex:proprietaryElement" minOccurs="0" />
         </xs:all>
         <xs:attribute name="invokeID" type="xs:unsignedLong" use="required" />
-        <xs:attribute name="sessionID" type="ex:strSessionId" use="required" />
+        <xs:attribute name="sessionID" type="ex:strSessionId" />
     </xs:complexType>
 
     <xs:complexType name="loginResponse">
