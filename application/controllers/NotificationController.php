@@ -30,17 +30,19 @@ class NotificationController extends Controller
         $notification = $db->fetchRow(
             $db->select()->from('espax_notification')->where('problem_reference = ?', $reference)
         );
+        $isHistoric = false;
         if (! $notification) {
             $notification = $db->fetchRow(
                 $db->select()->from('espax_notification_history')->where('problem_reference = ?', $reference)
             );
+            $isHistoric = true;
         }
         if ($notification) {
             $this->content()->add(new NotificationDetails($notification));
         } else {
             $this->content()->add(Hint::error(sprintf('There is no notification with this reference: %s', $reference)));
         }
-        if ($this->hasPermission('expax/deleteNotification')) {
+        if (! $isHistoric && $this->hasPermission('expax/deleteNotification')) {
             $this->addDeleteForm();
         }
         if (! $this->hasPermission('espax/showTrace')) {
