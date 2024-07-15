@@ -40,7 +40,6 @@ class IcingaAdapter
                 $e->getMessage()
             ));
         }
-
     }
 
     protected function hasIcingaDbModule(): bool
