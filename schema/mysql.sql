@@ -28,8 +28,7 @@ CREATE TABLE espax_notification (
     -- state... ??
     error_message TEXT NULL DEFAULT NULL,
     PRIMARY KEY (ts),
-    UNIQUE KEY idx_ref (node_uuid, problem_reference),
-    UNIQUE KEY idx_tan (problem_tan)
+    INDEX idx_reference(problem_reference, ts)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE espax_notification_history (
@@ -49,8 +48,7 @@ CREATE TABLE espax_notification_history (
     -- state... ??
     error_message TEXT NULL DEFAULT NULL,
     PRIMARY KEY (ts),
-    UNIQUE KEY idx_ref (node_uuid, problem_reference),
-    UNIQUE KEY idx_tan (problem_tan)
+    INDEX idx_reference(problem_reference, ts)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE espax_packet_trace (
@@ -74,4 +72,4 @@ CREATE TABLE espax_schema_migration (
 
 INSERT
     INTO espax_schema_migration (schema_version, migration_time)
-    VALUES (3, NOW());
+    VALUES (5, NOW());
