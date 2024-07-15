@@ -4,6 +4,7 @@ namespace Icinga\Module\Espax\Daemon;
 
 use gipfl\Json\JsonString;
 use gipfl\ZfDb\Adapter\Adapter;
+use Icinga\Module\Espax\Icinga\IcingaAdapter;
 use Icinga\Module\Espax\ProblemReference;
 use Icinga\Module\Espax\Icinga\SimpleNotification;
 
@@ -22,10 +23,14 @@ class Store
     /** @var ?int */
     protected $lastNow = null;
 
-    public function __construct(Adapter $db, NodeConfig $node)
+    /** @var IcingaAdapter */
+    protected $icinga;
+
+    public function __construct(Adapter $db, IcingaAdapter $icinga, NodeConfig $node)
     {
         $this->db = $db;
         $this->node = $node;
+        $this->icinga = $icinga;
     }
 
     public function loadPendingNotification(ProblemReference $reference): ?SimpleNotification

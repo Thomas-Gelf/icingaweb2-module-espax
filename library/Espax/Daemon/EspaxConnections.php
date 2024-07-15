@@ -6,6 +6,7 @@ use gipfl\Protocol\EspaX\EspaXClient;
 use gipfl\Protocol\EspaX\EspaXConnectionConfig;
 use gipfl\ZfDb\Adapter\Adapter as Db;
 use Icinga\Application\Config;
+use Icinga\Module\Espax\Icinga\IcingaAdapter;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
@@ -65,7 +66,7 @@ class EspaxConnections implements DbBasedComponent
 
         $config = Config::module('espax');
         $nodeConfig = NodeConfig::fromArray($config->getSection('node')->toArray());
-        $store = new Store($db, $nodeConfig);
+        $store = new Store($db, new IcingaAdapter($this->logger), $nodeConfig);
         $packetLogger = new PacketDbLogger($store, $nodeConfig->uuid, $this->logger);
         $this->loadConnectionsFromConfig($store, $packetLogger, $this->logger);
     }

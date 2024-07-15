@@ -7,12 +7,13 @@ use Icinga\Module\Monitoring\Command\Object\AcknowledgeProblemCommand;
 use Icinga\Module\Monitoring\Command\Transport\CommandTransport;
 use Icinga\Module\Monitoring\Exception\CommandTransportException;
 use Icinga\Module\Monitoring\Object\Host;
+use Icinga\Module\Monitoring\Object\MonitoredObject;
 use Icinga\Module\Monitoring\Object\Service;
 use RuntimeException;
 
 class IcingaCommandPipe
 {
-    public function acknowledge($author, $message, $host, $service = null)
+    public function acknowledge(string $author, string $message, string $host, ?string $service = null): bool
     {
         $object = $this->getObject($host, $service);
         if ($object->acknowledged) {
@@ -38,7 +39,7 @@ class IcingaCommandPipe
         return true;
     }
 
-    protected function getObject($hostname, $service)
+    protected function getObject(string $hostname, ?string $service): MonitoredObject
     {
         if ($service === null) {
             return $this->getHostObject($hostname);
@@ -47,7 +48,7 @@ class IcingaCommandPipe
         return $this->getServiceObject($hostname, $service);
     }
 
-    protected function getHostObject($hostname)
+    protected function getHostObject(string $hostname): Host
     {
         $host = new Host(MonitoringBackend::instance(), $hostname);
 
@@ -58,7 +59,7 @@ class IcingaCommandPipe
         return $host;
     }
 
-    protected function getServiceObject($hostname, $service)
+    protected function getServiceObject(string $hostname, string $service): Service
     {
         $service = new Service(MonitoringBackend::instance(), $hostname, $service);
 
