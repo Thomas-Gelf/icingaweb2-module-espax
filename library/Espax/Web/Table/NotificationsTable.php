@@ -17,6 +17,13 @@ class NotificationsTable extends ZfQueryBasedTable
         'n.problem_reference_details',
         'n.accepted_by',
     ];
+    /** @var string */
+    protected $tableName = 'espax_notification';
+
+    public function setTableName(string $tableName): void
+    {
+        $this->tableName = $tableName;
+    }
 
     public function renderRow($row)
     {
@@ -92,7 +99,7 @@ class NotificationsTable extends ZfQueryBasedTable
     public function prepareQuery(): Select
     {
         return $this->db()->select()
-            ->from(['n' => 'espax_notification'], [
+            ->from(['n' => $this->tableName], [
                 'ts'           => 'n.ts',
                 'ts_sent'      => 'n.ts_sent',
                 'ts_confirmed' => 'n.ts_confirmed',

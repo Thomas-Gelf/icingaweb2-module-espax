@@ -25,6 +25,9 @@ abstract class Controller extends CompatController
         $tabs = $this->tabs()->add('notifications', [
             'url' => 'espax/notifications',
             'label' => $this->translate('Notifications'),
+        ])->add('history', [
+            'url' => 'espax/notifications/history',
+            'label' => $this->translate('History'),
         ]);
         if ($this->hasPermission('espax/showTrace')) {
             $tabs->add('trace', [
