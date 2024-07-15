@@ -43,7 +43,7 @@ class NotificationController extends Controller
             $this->content()->add(Hint::error(sprintf('There is no notification with this reference: %s', $reference)));
         }
         if (! $isHistoric && $this->hasPermission('expax/deleteNotification')) {
-            $this->addDeleteForm();
+            $this->addDeleteForm($notification->ts);
         }
         if (! $this->hasPermission('espax/showTrace')) {
             return;
@@ -60,15 +60,14 @@ class NotificationController extends Controller
         }
     }
 
-    protected function addDeleteForm(): void
+    protected function addDeleteForm(int $ts): void
     {
-        $reference = $this->params->getRequired('problem_reference');
         $deleteForm = new DeleteNotificationForm();
-        $deleteForm->on('success', function () use ($reference) {
+        $deleteForm->on('success', function () use ($ts) {
             try {
                 await($this->remoteClient()->request('espaxDb.deleteNotification', [
-                    'reference' => $reference,
-                    'username'  => $this->Auth()->getUser()->getUsername(),
+                    'ts' => $ts,
+                    'username' => $this->Auth()->getUser()->getUsername(),
                 ]));
             } catch (\Exception $e) {
                 $this->content()->prepend(Hint::error($e->getMessage()));

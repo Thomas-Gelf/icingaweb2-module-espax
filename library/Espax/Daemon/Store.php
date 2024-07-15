@@ -57,9 +57,13 @@ class Store
 
     public function loadPendingNotificationPropertiesForReferenceKey(string $referenceKey): ?stdClass
     {
+        // We should switch to a ts-based key everywhere
         $db = $this->db;
         if ($row = $db->fetchRow(
-            $db->select()->from(self::TABLE_NOTIFICATION)->where('problem_reference = ?', $referenceKey)
+            $db->select()->from(self::TABLE_NOTIFICATION)
+                ->where('problem_reference = ?', $referenceKey)
+                ->order('ts DESC')
+                ->limit(1)
         )) {
             return $row;
         }

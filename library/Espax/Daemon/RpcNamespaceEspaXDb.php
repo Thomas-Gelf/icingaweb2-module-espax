@@ -22,17 +22,17 @@ class RpcNamespaceEspaXDb implements DbBasedComponent
     }
 
     /**
-     * @param string $reference
+     * @param int $ts
      * @param string $username
      */
-    public function deleteNotificationRequest(string $reference, string $username): bool
+    public function deleteNotificationRequest(int $ts, string $username): bool
     {
         if ($this->db === null) {
             throw new \Exception('ESPA-X daemon has no DB connection');
         }
         $now = (int) floor(microtime(true) * 1000);
 
-        $notification = $this->store->loadPendingNotificationPropertiesForReferenceKey($reference);
+        $notification = $this->store->loadPendingNotificationPropertiesForTs($ts);
         if (! $notification) {
             return false;
         }
