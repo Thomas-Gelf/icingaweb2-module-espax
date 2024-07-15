@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Espax Module (0.0.0)\n"
 "Report-Msgid-Bugs-To: ISSUE TRACKER\n"
 "POT-Creation-Date: 2024-05-13 07:55+0000\n"
-"PO-Revision-Date: 2024-05-13 09:55+0200\n"
+"PO-Revision-Date: 2024-07-15 16:15+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -20,12 +20,12 @@ msgstr ""
 "X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: library/Espax/Icinga/IcingaProblemReference.php:56
+#: library/Espax/Icinga/IcingaProblemReference.php:66
 #, php-format
 msgid "%s (host problem)"
 msgstr "%s (Host-Problem)"
 
-#: library/Espax/Icinga/IcingaProblemReference.php:59
+#: library/Espax/Icinga/IcingaProblemReference.php:69
 #, php-format
 msgid "%s on %s"
 msgstr "%s auf %s"
@@ -42,9 +42,17 @@ msgstr "Akzeptiert von"
 msgid "Allow to delete sent notifications"
 msgstr "Das Löschen von Benachrichtigungen erlauben"
 
-#: library/Espax/Web/Form/InlineIssueForm.php:43
+#: library/Espax/Web/Form/InlineActionForm.php:37
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: library/Espax/Web/Form/DeleteNotificationForm.php:9
+msgid "Cancel notification"
+msgstr "Benachrichtigung abbrechen"
+
+#: library/Espax/Web/Form/DeleteNotificationForm.php:9
+msgid "Cancel this notification"
+msgstr "Diese Benachrichtigung abbrechen"
 
 #: library/Espax/Web/Table/NotificationDetails.php:33
 msgid "Confirmed by Gateway"
@@ -53,14 +61,6 @@ msgstr "Bestätigt vom Gateway"
 #: library/Espax/Web/Table/NotificationDetails.php:31
 msgid "Created"
 msgstr "Erstellt"
-
-#: library/Espax/Web/Form/DeleteNotificationForm.php:9
-msgid "Delete"
-msgstr "Löschen"
-
-#: library/Espax/Web/Form/DeleteNotificationForm.php:9
-msgid "Delete this notification"
-msgstr "Lösche diese Benachrichtigung"
 
 #: library/Espax/Web/Table/NotificationDetails.php:38
 msgid "Destination"
@@ -82,7 +82,12 @@ msgstr "Fehlerbeschreibung"
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
+#: application/controllers/TraceController.php:21
+msgid "Full Packet Trace"
+msgstr "Vollständiger Paketmitschnitt"
+
 #: configuration.php:6
+#: application/controllers/Controller.php:30
 msgid "History"
 msgstr "Verlauf"
 
@@ -90,7 +95,7 @@ msgstr "Verlauf"
 msgid "Message"
 msgstr "Nachricht"
 
-#: application/controllers/NotificationController.php:48
+#: application/controllers/NotificationController.php:54
 msgid "No related packet trace has been found"
 msgstr "Kein zugehöriges Paket wurde gefunden"
 
@@ -98,61 +103,65 @@ msgstr "Kein zugehöriges Paket wurde gefunden"
 msgid "Node UUID"
 msgstr "Node-UUID"
 
-#: application/controllers/NotificationController.php:27
+#: application/controllers/NotificationController.php:28
 msgid "Notification"
 msgstr "Benachrichtigung"
 
-#: application/controllers/NotificationController.php:26
+#: application/controllers/NotificationController.php:27
 msgid "Notification Details"
 msgstr "Benachrichtigungsdetails"
 
-#: library/Espax/Web/Table/NotificationsTable.php:37
+#: library/Espax/Web/Table/NotificationsTable.php:44
 #, php-format
 msgid "Notification for %s received, has been forwarded (unconfirmed)"
 msgstr "Benachrichtigung für %s empfangen, wurde weitergeleitet (unbestätigt)"
 
-#: library/Espax/Web/Table/NotificationsTable.php:47
+#: library/Espax/Web/Table/NotificationsTable.php:54
 #, php-format
 msgid "Notification for %s received, has been forwarded and confirmed"
 msgstr "Benachrichtigung für %s empfangen, wurde weitergeleitet und bestätigt"
 
-#: library/Espax/Web/Table/NotificationsTable.php:31
+#: library/Espax/Web/Table/NotificationsTable.php:38
 #, php-format
 msgid "Notification for %s received, scheduled for delivery"
 msgstr "Benachrichtigung für %s empfangen, wurde für den Empfang vorbereitet"
 
-#: application/controllers/NotificationController.php:59
+#: application/controllers/NotificationController.php:76
 msgid "Notification has been deleted"
 msgstr "Benachrichtigung wurde gelöscht"
 
-#: library/Espax/Web/Table/NotificationsTable.php:57
+#: library/Espax/Web/Table/NotificationsTable.php:64
 #, php-format
 msgid "Notification received, has been accepted by %s"
 msgstr "Benachrichtigung empfangen, wurden von %s akzeptiert"
 
-#: library/Espax/Web/Table/NotificationsTable.php:66
+#: library/Espax/Web/Table/NotificationsTable.php:73
 msgid "Notification submission failed: "
 msgstr "Die Übermittlung der Benachrichtigung fehlgeschlagen: "
 
-#: application/controllers/NotificationsController.php:22
+#: application/controllers/Controller.php:27
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
 #: configuration.php:7
-#: application/controllers/NotificationsController.php:21
+#: application/controllers/NotificationsController.php:20
 msgid "Notifications (ESPA-X)"
 msgstr "Benachrichtigungen (ESPA-X)"
+
+#: application/controllers/NotificationsController.php:36
+msgid "Notifications (ESPA-X) - History"
+msgstr "Benachrichtigungen (ESPA-X) - Verlauf"
 
 #: library/Espax/Web/Table/NotificationDetails.php:40
 msgid "Problem reference"
 msgstr "Problemreferenz"
 
-#: library/Espax/Web/Form/InlineIssueForm.php:38
+#: library/Espax/Web/Form/InlineActionForm.php:32
 #, php-format
 msgid "Really %s"
 msgstr "Wirklich %s"
 
-#: application/controllers/NotificationController.php:50
+#: application/controllers/NotificationController.php:56
 msgid "Related packet trace"
 msgstr "Zugehöriger Paketmitschnitt"
 
@@ -164,6 +173,25 @@ msgstr "Zum Gateway gesendet"
 msgid "Show Packet Traces (might contain sensitive data)"
 msgstr "Paketmitschnitt anzeigen (könnte sensible Informationen enthalten)"
 
-#: application/controllers/NotificationsController.php:26
+#: application/controllers/NotificationsController.php:42
+msgid "There historic notification in this database"
+msgstr ""
+
+#: application/controllers/NotificationsController.php:25
 msgid "There is no pending or recently sent notification"
 msgstr "Es gibt keine wartenden oder kürzlich übermittelten Benachrichtigungen"
+
+#: application/controllers/Controller.php:35
+msgid "Trace"
+msgstr ""
+
+#: application/controllers/Controller.php:38
+msgid "Unreferenced"
+msgstr "Unreferenziert"
+
+#: application/controllers/TraceController.php:35
+msgid "Unreferenced Packets"
+msgstr ""
+
+#~ msgid "Delete"
+#~ msgstr "Löschen"
