@@ -2,17 +2,22 @@
 
 namespace Icinga\Module\Espax\Daemon;
 
+use Exception;
 use gipfl\Json\JsonString;
 use gipfl\ZfDb\Adapter\Adapter;
 use Icinga\Module\Espax\Icinga\IcingaAdapter;
+use Icinga\Module\Espax\Icinga\IcingaProblemReference;
 use Icinga\Module\Espax\ProblemReference;
 use Icinga\Module\Espax\Icinga\SimpleNotification;
+
+use stdClass;
 
 use function get_class;
 
 class Store
 {
     public const TABLE_NOTIFICATION = 'espax_notification';
+    public const TABLE_NOTIFICATION_HISTORY = 'espax_notification_history';
 
     /** @var Adapter */
     protected $db;
@@ -45,6 +50,29 @@ class Store
                 $row->destination,
                 $row->message
             );
+        }
+
+        return null;
+    }
+
+    public function loadPendingNotificationPropertiesForReferenceKey(string $referenceKey): ?stdClass
+    {
+        $db = $this->db;
+        if ($row = $db->fetchRow(
+            $db->select()->from(self::TABLE_NOTIFICATION)->where('problem_reference = ?', $referenceKey)
+        )) {
+            return $row;
+        }
+
+        return null;
+    }
+    public function loadPendingNotificationPropertiesForTs(int $ts): ?stdClass
+    {
+        $db = $this->db;
+        if ($row = $db->fetchRow(
+            $db->select()->from(self::TABLE_NOTIFICATION)->where('ts = ?', $ts)
+        )) {
+            return $row;
         }
 
         return null;
@@ -118,7 +146,7 @@ class Store
     /**
      * We shipped the packet
      */
-    public function setSent($ts, $tan)
+    public function setSent($ts, $tan): void
     {
         $this->db->update(self::TABLE_NOTIFICATION, [
             'ts_sent'     => $this->now(),
@@ -129,7 +157,7 @@ class Store
     /**
      * ESPA-X-Server confirmed receipt
      */
-    public function setConfirmed(string $reference)
+    public function setConfirmed(string $reference): void
     {
         $this->db->update(self::TABLE_NOTIFICATION, [
             'ts_confirmed' => $this->now(),
@@ -139,12 +167,30 @@ class Store
     /**
      * Accepted by the final destination
      */
-    public function setAccepted(string $reference, ?string $acceptedBy)
+    public function setAccepted(string $referenceKey, ?string $acceptedBy): void
     {
-        $this->db->update(self::TABLE_NOTIFICATION, [
-            'ts_accepted' => $this->now(),
-            'accepted_by' => $acceptedBy,
-        ], $this->whereReference($reference));
+        $now = $this->now();
+        $notification = $this->loadPendingNotificationPropertiesForReferenceKey($referenceKey);
+        if (! $notification) {
+            return;
+        }
+        $reference = $this->referenceFromDbRow($notification);
+        $notification->ts_accepted = $now;
+        $notification->accepted_by = $acceptedBy;
+        $this->archiveNotification((array) $notification, $reference);
+        if ($reference instanceof IcingaProblemReference) {
+            $this->icinga->ack($reference, $acceptedBy ?? 'ESPA-X', 'Problem has been accepted');
+        }
+    }
+
+    protected function referenceFromDbRow(stdClass $row): ProblemReference
+    {
+        /** @var class-string|ProblemReference $refClass */
+        $refClass = $row->problem_reference_implementation;
+        /** @var class-string|ProblemReference $refClass */
+        return $refClass::fromSerialization(
+            JsonString::decode($row->problem_reference_details)
+        );
     }
 
     /**
@@ -152,12 +198,32 @@ class Store
      *
      * TODO: Accepted_by
      */
-    public function setFailed(int $ts, string $errorMessage)
+    public function setFailed(int $ts, string $errorMessage): void
     {
-        $this->db->update(self::TABLE_NOTIFICATION, [
-            'ts_failed'     => $this->now(),
-            'error_message' => $errorMessage,
-        ], $this->whereTs($ts));
+        $now = $this->now();
+        $notification = $this->loadPendingNotificationPropertiesForReferenceKey($ts);
+        if (! $notification) {
+            return;
+        }
+        $reference = $this->referenceFromDbRow($notification);
+        $notification->ts_accepted = $now;
+        $notification->error_message = $errorMessage;
+        $this->archiveNotification((array) $notification, $reference);
+    }
+
+    protected function archiveNotification(array $properties, ProblemReference $reference)
+    {
+        $this->db->beginTransaction();
+        try {
+            $this->db->insert(self::TABLE_NOTIFICATION_HISTORY, $properties);
+            $this->deleteNotification($reference);
+            $this->db->commit();
+        } catch (Exception $e) {
+            try {
+                $this->db->rollBack();
+            } catch (Exception $e) {
+            }
+        }
     }
 
     protected function whereTs(int $ts): string
