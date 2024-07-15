@@ -6,6 +6,6 @@ class DeleteNotificationForm extends InlineActionForm
 {
     protected function assemble()
     {
-        $this->provideAction($this->translate('Cancel'), $this->translate('Cancel this notification'));
+        $this->provideAction($this->translate('Cancel notification'), $this->translate('Cancel this notification'));
     }
 }
