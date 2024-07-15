@@ -174,7 +174,7 @@ class Store
         if (! $notification) {
             return;
         }
-        $reference = $this->referenceFromDbRow($notification);
+        $reference = self::referenceFromDbRow($notification);
         $notification->ts_accepted = $now;
         $notification->accepted_by = $acceptedBy;
         $this->archiveNotification((array) $notification, $reference);
@@ -183,7 +183,7 @@ class Store
         }
     }
 
-    protected function referenceFromDbRow(stdClass $row): ProblemReference
+    public static function referenceFromDbRow(stdClass $row): ProblemReference
     {
         /** @var class-string|ProblemReference $refClass */
         $refClass = $row->problem_reference_implementation;
@@ -201,17 +201,17 @@ class Store
     public function setFailed(int $ts, string $errorMessage): void
     {
         $now = $this->now();
-        $notification = $this->loadPendingNotificationPropertiesForReferenceKey($ts);
+        $notification = $this->loadPendingNotificationPropertiesForTs($ts);
         if (! $notification) {
             return;
         }
-        $reference = $this->referenceFromDbRow($notification);
-        $notification->ts_accepted = $now;
+        $reference = self::referenceFromDbRow($notification);
+        $notification->ts_failed = $now;
         $notification->error_message = $errorMessage;
         $this->archiveNotification((array) $notification, $reference);
     }
 
-    protected function archiveNotification(array $properties, ProblemReference $reference)
+    public function archiveNotification(array $properties, ProblemReference $reference)
     {
         $this->db->beginTransaction();
         try {

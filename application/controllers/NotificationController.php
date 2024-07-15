@@ -30,6 +30,11 @@ class NotificationController extends Controller
         $notification = $db->fetchRow(
             $db->select()->from('espax_notification')->where('problem_reference = ?', $reference)
         );
+        if (! $notification) {
+            $notification = $db->fetchRow(
+                $db->select()->from('espax_notification_history')->where('problem_reference = ?', $reference)
+            );
+        }
         if ($notification) {
             $this->content()->add(new NotificationDetails($notification));
         } else {
@@ -60,7 +65,8 @@ class NotificationController extends Controller
         $deleteForm->on('success', function () use ($reference) {
             try {
                 await($this->remoteClient()->request('espaxDb.deleteNotification', [
-                    'reference' => $reference
+                    'reference' => $reference,
+                    'username'  => $this->Auth()->getUser()->getUsername(),
                 ]));
             } catch (\Exception $e) {
                 $this->content()->prepend(Hint::error($e->getMessage()));

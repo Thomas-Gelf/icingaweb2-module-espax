@@ -84,7 +84,7 @@ class BackgroundDaemon implements DaemonTask, SystemdAwareTask, LoggerAwareInter
         $this->setInitialDaemonState();
         $this->packetHandler = new NamespacedPacketHandler();
         $this->packetHandler->registerNamespace('espax', new RpcNamespaceEspaX($this->connections));
-        $dbApi = new RpcNamespaceEspaXDb();
+        $dbApi = new RpcNamespaceEspaXDb($this->logger);
         $this->packetHandler->registerNamespace('espaxDb', $dbApi);
         $this->initializeControlSocket(self::SOCKET);
         $this->processDetails = $this

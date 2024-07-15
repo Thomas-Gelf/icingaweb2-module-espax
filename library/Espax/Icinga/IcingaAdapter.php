@@ -30,6 +30,9 @@ class IcingaAdapter
                 return;
             }
             $acknowledged = $cmd->acknowledge($username, $message, $reference->getHost(), $reference->getService());
+            if ($acknowledged) {
+                $this->logger->info('Icinga problem has been acknowledged for ' . $reference->getDisplayString());
+            }
         } catch (\Exception $e) {
             $this->logger->error(sprintf(
                 'Failed to acknowledge %s: %s',
@@ -38,9 +41,6 @@ class IcingaAdapter
             ));
         }
 
-        if ($acknowledged) {
-            $this->logger->info('Icinga problem has been acknowledged for ' . $reference->getDisplayString());
-        }
     }
 
     protected function hasIcingaDbModule(): bool
