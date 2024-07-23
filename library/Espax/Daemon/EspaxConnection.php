@@ -17,7 +17,6 @@ use gipfl\Protocol\EspaX\Packet\EspaXIndication;
 use gipfl\Protocol\EspaX\Packet\EspaXResponse;
 use Icinga\Module\Espax\Icinga\IcingaProblemReference;
 use Icinga\Module\Espax\Icinga\SimpleNotification;
-
 use Psr\Log\LoggerInterface;
 use React\Promise\PromiseInterface;
 
