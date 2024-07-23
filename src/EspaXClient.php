@@ -195,9 +195,16 @@ class EspaXClient implements EventEmitterInterface
 
     protected function closeConnection(): void
     {
-        $this->pendingConnection = null;
         if ($this->connection) {
             $this->connection->end();
+            $this->cleanupAfterClosedConnection();
+        }
+    }
+
+    protected function cleanupAfterClosedConnection(): void
+    {
+        $this->pendingConnection = null;
+        if ($this->connection) {
             $this->connection = null;
             $this->sessionId = null;
             foreach ($this->pendingRequests as $request) {
@@ -231,9 +238,8 @@ class EspaXClient implements EventEmitterInterface
 
                         return $connection;
                     }, function (Exception $e) {
-                        // TODO: reconnect
-                        $this->pendingConnection = null;
                         $this->logger->error($e->getMessage());
+                        $this->cleanupAfterClosedConnection();
                         return reject($e);
                     });
             }
