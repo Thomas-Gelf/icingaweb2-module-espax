@@ -195,10 +195,6 @@ class EspaXClient implements EventEmitterInterface
 
     protected function closeConnection(): void
     {
-        if ($this->heartbeatTimer) {
-            Loop::cancelTimer($this->heartbeatTimer);
-            $this->heartbeatTimer = null;
-        }
         $this->pendingConnection = null;
         if ($this->connection) {
             $this->connection->end();
