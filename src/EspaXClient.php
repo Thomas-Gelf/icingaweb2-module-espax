@@ -236,6 +236,7 @@ class EspaXClient implements EventEmitterInterface
                         return $connection;
                     }, function (Exception $e) {
                         // TODO: reconnect
+                        $this->pendingConnection = null;
                         $this->logger->error($e->getMessage());
                         return reject($e);
                     });
