@@ -20,7 +20,6 @@ use Icinga\Module\Espax\Icinga\SimpleNotification;
 use Psr\Log\LoggerInterface;
 use React\Promise\PromiseInterface;
 
-use function React\Promise\reject;
 use function React\Promise\resolve;
 
 class EspaxConnection
@@ -46,6 +45,27 @@ class EspaxConnection
         $this->applyIndicationHandlers($client);
     }
 
+    protected function assertDbConnection(): void
+    {
+        $db = $this->store->getDb();
+        try {
+            $db->query('SELECT 1');
+        } catch (\Exception $e) {
+            // Simple reconnect
+            $this->logger->error($e->getMessage());
+            if (str_contains($e->getMessage(), 'has gone away')) {
+                try {
+                    $this->logger->notice('Trying to reconnect to DB');
+                    $db->closeConnection();
+                    $db->query('SELECT 1');
+                } catch (\Exception $e) {
+                    $this->logger->notice('Reconnection failed: ' . $e->getMessage());
+                    throw $e;
+                }
+            }
+        }
+    }
+
     /**
      * @return PromiseInterface<?bool>
      */
@@ -55,32 +75,19 @@ class EspaxConnection
         string $message,
         ?int $timeout = null
     ): PromiseInterface {
-        try {
-            if ($this->store->hasPendingNotification($reference)) {
-                $this->logger->debug(sprintf('Notification for %s is already pending', $reference->getDisplayString()));
-                return resolve(null);
-            }
-        } catch (\Exception $e) {
-            // Simple reconnect
-            $this->logger->error($e->getMessage());
-            if (str_contains($e->getMessage(), 'has gone away')) {
-                $db = $this->store->getDb();
-                try {
-                    $this->logger->notice('Trying to reconnect to DB');
-                    $db->closeConnection();
-                    if ($this->store->hasPendingNotification($reference)) {
-                        return resolve(null);
-                    }
-                } catch (\Exception $e) {
-                    $this->logger->notice('Reconnection failed: ' . $e->getMessage());
-                }
-            }
-
-            return reject($e);
-        }
-
+        $this->assertDbConnection();
+        $ts = null;
         $notification = new SimpleNotification($reference, $destination, $message);
-        $ts = $this->store->createNotification($notification);
+        if ($pending = $this->store->loadPendingNotificationPropertiesForReferenceKey($reference)) {
+            if ($pending->ts_accepted === null) {
+                // We got a new notification, and the former one hasn't been accepted
+                $notification = new SimpleNotification($reference, $pending->destination, $pending->message);
+                $ts = $pending->ts;
+            }
+        }
+        if ($ts === null) {
+            $ts = $this->store->createNotification($notification);
+        }
 
         return $this->client->request(RequestType::PROCESS_START, [
             RequestProperty::CP_PR_REF       => $notification->reference->__toString(),
